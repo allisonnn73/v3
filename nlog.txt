@@ -1,0 +1,179 @@
+SELECT D.DeptCode as DeptCode, 
+      0 as SectorCode,
+      0 as DivCode,
+      0 as UnitCode,
+      0 as UnitID,  
+      0 as JobCode, 
+      0 as empCode,
+      DeptName AS SomeName, 
+      sum (S.jobOklad) sumJobOkl,
+      0 as JobOklad, 
+      2 as pDept,
+      sum (S.jobOklad) sumEmpOkl,
+			sum (CEILING(S.Proc3 * S.jobOklad/100)) sumNadVL,
+			sum (CEILING(S.Proc4 * S.jobOklad/100)) sumNadSec,
+      sum (CEILING(S.Proc8 * S.jobOklad/100)) sumNadMonth,
+      sum (CEILING(S.Proc9 * S.jobOklad/100)) sumNadSlozh,
+      sum (Nadb10) sumNadRang, 
+      sum (Nadb11) sumNadZvan, 
+      sum (Nadb12) sumNadRash, 
+      '---' as status,
+      0 as proc1
+			from sprDepts D, Units U, Shtats S 
+			where U.DeptCode = D.DeptCode
+			and S.UnitID = U.UnitID 
+			and D.OrgCode=1
+            and D.BDate <= '2020-03-31' AND (D.FDate >= '2020-03-31' OR D.FDate IS NULL)
+            and U.BDate <= '2020-03-31' AND (U.FDate >= '2020-03-31' OR U.FDate IS NULL)
+           and S.BDate <= '2020-03-31' AND (S.FDate >= '2020-03-31' OR S.FDate IS NULL)
+       Group BY D.DeptCode,D.DeptName UNION SELECT D.DeptCode as DeptCode,
+      D.SectorCode as SectorCode,
+      0 as DivCode,
+      0 as UnitCode,
+      0 AS UnitID,  
+      0 as JobCode,
+      0 as empCode, 
+      SectorName AS SomeName, 
+      sum (S.jobOklad) sumJobOkl, 
+      0 as JobOklad,
+      3 as pDept,
+      sum (S.jobOklad) sumEmpOkl,
+			sum (CEILING(S.Proc3 * S.jobOklad/100)) sumNadVL,
+			sum (CEILING(S.Proc4 * S.jobOklad/100)) sumNadSec,
+      sum (CEILING(S.Proc8 * S.jobOklad/100)) sumNadMonth,
+      sum (CEILING(S.Proc9 * S.jobOklad/100)) sumNadSlozh,
+      sum (Nadb10) sumNadRang, 
+      sum (Nadb11) sumNadZvan, 
+      sum (Nadb12) sumNadRash, 
+      '---' as status,
+      0 as proc1
+			from sprSectors D, Units U, Shtats S 
+			where 
+			U.DeptCode = D.DeptCode
+			and U.SectorCode =D.SectorCode
+			and S.UnitID = U.UnitID 
+			and D.OrgCode=1
+            and D.BDate <= '2020-03-31' AND (D.FDate >= '2020-03-31' OR D.FDate IS NULL)
+            and U.BDate <= '2020-03-31' AND (U.FDate >= '2020-03-31' OR U.FDate IS NULL)
+           and S.BDate <= '2020-03-31' AND (S.FDate >= '2020-03-31' OR S.FDate IS NULL)
+		   and D.SectorCode >0
+		   Group BY D.DeptCode,D.SectorCode,D.SectorName UNION SELECT D.DeptCode as DeptCode,
+      D.SectorCode as SectorCode,
+      D.DivCode as DivCode,
+      0 as UnitCode,
+      0 AS UnitID,  
+      0 as JobCode,
+      0 as empCode, 
+      D.DivName AS SomeName, 
+      sum (S.jobOklad) sumJobOkl, 
+      0 as JobOklad, 
+      4 as pDept,
+      sum (S.jobOklad) sumEmpOkl,
+			sum (CEILING(S.Proc3 * S.jobOklad/100)) sumNadVL,
+			sum (CEILING(S.Proc4 * S.jobOklad/100)) sumNadSec,
+      sum (CEILING(S.Proc8 * S.jobOklad/100)) sumNadMonth,
+      sum (CEILING(S.Proc9 * S.jobOklad/100)) sumNadSlozh,
+      sum (Nadb10) sumNadRang, 
+      sum (Nadb11) sumNadZvan, 
+      sum (Nadb12) sumNadRash, 
+      '---' as status,
+      0 as proc1   
+			from sprDivs D, Units U, Shtats S 
+			where 
+			U.DeptCode = D.DeptCode
+			and U.SectorCode =D.SectorCode
+			and U.DivCode =D.DivCode
+			and S.UnitID = U.UnitID 
+			and D.OrgCode=1
+            and D.BDate <= '2020-03-31' AND (D.FDate >= '2020-03-31' OR D.FDate IS NULL)
+            and U.BDate <= '2020-03-31' AND (U.FDate >= '2020-03-31' OR U.FDate IS NULL)
+           and S.BDate <= '2020-03-31' AND (S.FDate >= '2020-03-31' OR S.FDate IS NULL)
+		   and D.DivCode >0
+		   and S.pDecret=0
+       Group BY D.DeptCode,D.SectorCode,D.DivCode,D.DivName UNION SELECT U.DeptCode,
+      U.SectorCode as SectorCode,
+      U.DivCode as DivCode,
+      U.UnitCode as UnitCode,
+      U.UnitID, 
+      U.JobCode,
+      0 as empCode,
+      J.JobName AS SomeName, 
+      0 sumJobOkl,
+      0 as JobOklad, 
+      5 as pDept,
+      
+      0 sumEmpOkl,
+			0 sumNadVL,
+			0 sumNadSec,
+      0 sumNadMonth,
+      0 sumNadSlozh,
+      0 sumNadRang, 
+      0 sumNadZvan, 
+      0 sumNadRash, 
+      '---' as status,
+      0 as proc1   
+			from sprJobs J, Units U, Shtats S 
+			where 
+			J.JobCode = U.JobCode
+			and S.UnitID = U.UnitID 
+			and U.OrgCode=1
+      and U.BDate <= '2020-03-31' AND (U.FDate >= '2020-03-31' OR U.FDate IS NULL)
+      and S.BDate <= '2020-03-31' AND (S.FDate >= '2020-03-31' OR S.FDate IS NULL)
+		  and J.BDate <= '2020-03-31' AND (J.FDate >= '2020-03-31' OR J.FDate IS NULL) UNION SELECT U.DeptCode,
+      U.SectorCode as SectorCode,
+      U.DivCode as DivCode,
+      U.UnitCode as UnitCode,
+      U.UnitID, 
+      U.JobCode,
+      E.empKod as empCode, 
+      E.FIO AS SomeName, 
+      0 sumJobOkl,
+      S.jobOklad as JobOklad, 
+      6 as pDept,
+      S.jobOklad sumEmpOkl,
+			CEILING(S.Proc3 * S.jobOklad/100) sumNadVL,
+			CEILING(S.Proc4 * S.jobOklad/100) sumNadSec,
+      CEILING(S.Proc8 * S.jobOklad/100) sumNadMonth,
+      CEILING(S.Proc9 * S.jobOklad/100) sumNadSlozh,
+      Nadb10 sumNadRang, 
+      Nadb11 sumNadZvan, 
+      Nadb12 sumNadRash, 
+      str(S.pDecret,1) + str(S.pOtpuskBS,1) + str(S.pSovm,1) + str(S.pVrem,1) as status,
+      S.procOklad as proc1
+			from Emps E, Units U, Shtats S 
+			where 
+			E.EmpKod = S.EmpKod
+			and S.UnitID = U.UnitID 
+			and U.OrgCode=1
+            and U.BDate <= '2020-03-31' AND (U.FDate >= '2020-03-31' OR U.FDate IS NULL)
+           and S.BDate <= '2020-03-31' AND (S.FDate >= '2020-03-31' OR S.FDate IS NULL)
+       and E.BDate <= '2020-03-31' AND (E.FDate >= '2020-03-31' OR E.FDate IS NULL) UNION SELECT U.DeptCode as DeptCode,
+      U.SectorCode as SectorCode,
+      U.DivCode as DivCode,
+      U.UnitCode as UnitCode, 
+      U.UnitID,  
+      U.JobCode,
+      0 as empCode,
+      J.JobName + '--- Вакансия' AS SomeName,
+      0 sumJobOkl,
+      U.jobOklad as JobOklad,
+      7 as pDept,
+		  0 sumEmpOkl,
+			0 sumNadVL,
+			0 sumNadSec,
+      0 sumNadMonth,
+      0 sumNadSlozh,
+      0 sumNadRang, 
+      0 sumNadZvan, 
+      0 sumNadRash, 
+      '---' as status,
+      0 as proc1
+			from Units U,sprJobs J 
+			where 
+      J.JobCode = U.JobCode 
+     
+			and U.OrgCode=1
+            and U.BDate <= '2020-03-31' AND (U.FDate >= '2020-03-31' OR U.FDate IS NULL)
+           and (NOT EXISTS(SELECT ShtatID FROM Shtats S1 
+                       WHERE S1.UnitID =U.UnitID 
+             and  '2020-03-31' BETWEEN S1.BDate AND  ISNULL(S1.FDate,'2020-03-31'))) order by deptCode,SectorCode,DivCode,UnitCode,pDept
