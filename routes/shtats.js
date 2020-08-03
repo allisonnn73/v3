@@ -10,7 +10,7 @@ const readfile = promisify(fs.readFile);
 const bodyParser = require('body-parser');
 const Client = require('ssh2-sftp-client');
 const path = require('path');
-const sharp = require('sharp');
+//const sharp = require('sharp');
 const nodemailer = require('nodemailer');
 const multer  = require("multer");
 
